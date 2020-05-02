@@ -1,22 +1,23 @@
 {
-  "name": "novafox-vm",
+  "name": "novafox",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev-start": "concurrently \"cd src/server && nodemon server.js\" \"cd src/client && npm run serve\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheExpandingPolytope/novafox.git"
   },
-  "author": "Jesse Engerman <jesseengerman@hotmail.com>",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/TheExpandingPolytope/novafox/issues"
   },
-  "homepage": "https://github.com/TheExpandingPolytope/novafox#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+  "homepage": "https://github.com/TheExpandingPolytope/novafox#readme"
 }
