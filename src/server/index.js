@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const passport = require("./passport/setup");
 const auth = require("./routes/auth");
+const room = require("./routes/room");
 
 const app = express();
 const PORT = 5000;
@@ -35,6 +36,7 @@ app.use(passport.session());
 
 // Routes
 app.use("/api/auth", auth);
+app.use("/api/room", room);
 app.get("/", (req, res) => res.send("Good monring sunshine!"));
 
 app.listen(PORT, () => console.log(`Backend listening on port ${PORT}!`));

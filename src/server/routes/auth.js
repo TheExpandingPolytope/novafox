@@ -19,4 +19,9 @@ router.post("/register_login", (req, res, next) => {
     })(req, res, next);
 });
 
+router.post('/logout', function(req, res){
+    console.log(req.logOut());
+    res.send('logged out');
+});
+
 module.exports = router;

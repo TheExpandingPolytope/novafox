@@ -4,12 +4,14 @@ const mongoose = require("mongoose");
 const RoomSchema = new mongoose.Schema(
     {
         owner:{type: mongoose.Schema.Types.ObjectId, ref: 'users'},
-        views:{type: Number},
-        members:{type: Number},
+        views:{type: Number, default:0},
+        members:{type: Number, default:0},
         is_public:{type: Boolean},
+        address:{type:String},
         name: {
             type: String
         },
+        instance_id:{type:String},
     },
     { strict: false }
 );
