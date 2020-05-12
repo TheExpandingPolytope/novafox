@@ -15,12 +15,7 @@ var router: VueRouter = new VueRouter({
             component: Main
         },
         {
-            path:'/login',
-            component: Login
-        },
-        {
-            path:'/signup',
-            component: Signup
+            path:'/about',
         },
         {
             path:'/room/:id',

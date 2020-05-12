@@ -14,6 +14,7 @@ import { i18n } from './plugins/i18n'
 import router from './routes/index';
 import store from './store'
 import app from './app.vue'
+import VueRouter from 'vue-router'
 
 Vue.config.productionTip = false
 
@@ -24,11 +25,13 @@ Vue.use(Axios)
 Vue.use(Swal)
 Vue.use(Anime)
 Vue.use(Client)
+Vue.use(VueRouter);
 
 new Vue({
   i18n,
   store,
   render: (h) => h(app),
+  router: router,
   created() {
     const click = () => {
       this.$accessor.setActive()
