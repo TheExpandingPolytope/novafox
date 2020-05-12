@@ -8,10 +8,9 @@ const RoomSchema = new mongoose.Schema(
         members:{type: Number, default:0},
         is_public:{type: Boolean},
         address:{type:String},
-        name: {
-            type: String
-        },
+        name: {type: String},
         instance_id:{type:String},
+        url:{type:String},
     },
     { strict: false }
 );

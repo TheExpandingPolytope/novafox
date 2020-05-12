@@ -20,7 +20,8 @@ router.post("/register_login", (req, res, next) => {
 });
 
 router.post('/logout', function(req, res){
-    console.log(req.logOut());
+    req.logOut();
+    req.session.destroy();
     res.send('logged out');
 });
 
