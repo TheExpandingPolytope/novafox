@@ -71,7 +71,7 @@ export const actions = actionTree(
   { state, getters, mutations },
   {
     ban({ state }, member: string | Member) {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 
@@ -87,7 +87,7 @@ export const actions = actionTree(
     },
 
     kick({ state }, member: string | Member) {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 
@@ -103,7 +103,7 @@ export const actions = actionTree(
     },
 
     mute({ state }, member: string | Member) {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 
@@ -119,7 +119,7 @@ export const actions = actionTree(
     },
 
     unmute({ state }, member: string | Member) {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 

@@ -12,7 +12,7 @@ import Anime from './plugins/anime'
 
 import { i18n } from './plugins/i18n'
 import router from './routes/index';
-import store from './store'
+import store from './store/index'
 import app from './app.vue'
 import VueRouter from 'vue-router'
 

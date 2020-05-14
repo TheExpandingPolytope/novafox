@@ -1,7 +1,7 @@
 import { getterTree, mutationTree, actionTree } from 'typed-vuex'
 import { makeid } from '~/utils'
 import { EVENT } from '~/neko/events'
-import { accessor } from '~/store'
+import { accessor } from '~/store/index'
 
 export const namespaced = true
 
@@ -59,30 +59,30 @@ export const actions = actionTree(
   { state, getters, mutations },
   {
     newEmote(store, emote: Emote) {
-      if (accessor.settings.ignore_emotes || document.visibilityState === 'hidden') {
+      if (accessor.room.settings.ignore_emotes || document.visibilityState === 'hidden') {
         return
       }
 
       const id = makeid(10)
-      accessor.chat.addEmote({ id, emote })
+      accessor.room.chat.addEmote({ id, emote })
     },
 
     newMessage({ state }, message: Message) {
-      if (accessor.settings.chat_sound) {
+      if (accessor.room.settings.chat_sound) {
         new Audio('chat.mp3').play().catch(console.error)
       }
-      accessor.chat.addMessage(message)
+      accessor.room.chat.addMessage(message)
     },
 
     sendMessage(store, content: string) {
-      if (!accessor.connected || accessor.user.muted) {
+      if (!accessor.room.connected || accessor.room.user.muted) {
         return
       }
       $client.sendMessage(EVENT.CHAT.MESSAGE, { content })
     },
 
     sendEmote(store, emote: string) {
-      if (!accessor.connected || accessor.user.muted) {
+      if (!accessor.room.connected || accessor.room.user.muted) {
         return
       }
       $client.sendMessage(EVENT.CHAT.EMOTE, { emote })

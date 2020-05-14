@@ -1,6 +1,6 @@
 import { getterTree, mutationTree, actionTree } from 'typed-vuex'
 import { get, set } from '~/utils/localstorage'
-import { accessor } from '~/store'
+import { accessor } from '~/store/index'
 
 export const namespaced = true
 
@@ -65,8 +65,8 @@ export const actions = actionTree(
           for (const group of req.data.groups) {
             accessor.emoji.addGroup(group)
           }
-          accessor.emoji.setList(req.data.list)
-          accessor.emoji.setKeywords(req.data.keywords)
+          accessor.room.emoji.setList(req.data.list)
+          accessor.room.emoji.setKeywords(req.data.keywords)
         })
         .catch(console.error)
     },

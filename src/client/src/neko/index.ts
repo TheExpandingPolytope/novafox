@@ -3,7 +3,7 @@ import EventEmitter from 'eventemitter3'
 import { BaseClient, BaseEvents } from './base'
 import { Member } from './types'
 import { EVENT } from './events'
-import { accessor } from '~/store'
+import { accessor } from '~/store/index'
 
 import {
   DisconnectPayload,
@@ -34,11 +34,11 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   private cleanup() {
-    this.$accessor.setConnected(false)
-    this.$accessor.remote.reset()
-    this.$accessor.user.reset()
-    this.$accessor.video.reset()
-    this.$accessor.chat.reset()
+    this.$accessor.room.setConnected(false)
+    this.$accessor.room.remote.reset()
+    this.$accessor.room.user.reset()
+    this.$accessor.room.video.reset()
+    this.$accessor.room.chat.reset()
   }
 
   login(password: string, displayname: string) {
@@ -64,13 +64,13 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   // Internal Events
   /////////////////////////////
   protected [EVENT.CONNECTING]() {
-    this.$accessor.setConnnecting()
+    this.$accessor.room.setConnnecting()
   }
 
   protected [EVENT.CONNECTED]() {
-    this.$accessor.user.setMember(this.id)
-    this.$accessor.setConnected(true)
-    this.$accessor.setConnected(true)
+    this.$accessor.room.user.setMember(this.id)
+    this.$accessor.room.setConnected(true)
+    this.$accessor.room.setConnected(true)
 
     this.$vue.$notify({
       group: 'neko',
@@ -99,8 +99,8 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.video.addTrack([track, streams[0]])
-    this.$accessor.video.setStream(0)
+    this.$accessor.room.video.addTrack([track, streams[0]])
+    this.$accessor.room.video.setStream(0)
   }
 
   protected [EVENT.DATA](data: any) {}
@@ -122,8 +122,8 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   // Member Events
   /////////////////////////////
   protected [EVENT.MEMBER.LIST]({ members }: MemberListPayload) {
-    this.$accessor.user.setMembers(members)
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.user.setMembers(members)
+    this.$accessor.room.chat.newMessage({
       id: this.id,
       content: this.$vue.$t('notifications.connected', { name: '' }) as string,
       type: 'event',
@@ -132,10 +132,10 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.MEMBER.CONNECTED](member: MemberPayload) {
-    this.$accessor.user.addMember(member)
+    this.$accessor.room.user.addMember(member)
 
     if (member.id !== this.id) {
-      this.$accessor.chat.newMessage({
+      this.$accessor.room.chat.newMessage({
         id: member.id,
         content: this.$vue.$t('notifications.connected', { name: '' }) as string,
         type: 'event',
@@ -150,21 +150,21 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id: member.id,
       content: this.$vue.$t('notifications.disconnected', { name: '' }) as string,
       type: 'event',
       created: new Date(),
     })
 
-    this.$accessor.user.delMember(id)
+    this.$accessor.room.user.delMember(id)
   }
 
   /////////////////////////////
   // Control Events
   /////////////////////////////
   protected [EVENT.CONTROL.LOCKED]({ id }: ControlPayload) {
-    this.$accessor.remote.setHost(id)
+    this.$accessor.room.remote.setHost(id)
     const member = this.member(id)
     if (!member) {
       return
@@ -180,7 +180,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       })
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id: member.id,
       content: this.$vue.$t('notifications.controls_taken', { name: '' }) as string,
       type: 'event',
@@ -189,7 +189,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.CONTROL.RELEASE]({ id }: ControlPayload) {
-    this.$accessor.remote.reset()
+    this.$accessor.room.remote.reset()
     const member = this.member(id)
     if (!member) {
       return
@@ -205,7 +205,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       })
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id: member.id,
       content: this.$vue.$t('notifications.controls_released', { name: '' }) as string,
       type: 'event',
@@ -250,8 +250,8 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.remote.setHost(member)
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.remote.setHost(member)
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.controls_given', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -262,7 +262,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.CONTROL.CLIPBOARD]({ text }: ControlClipboardPayload) {
-    this.$accessor.remote.setClipboard(text)
+    this.$accessor.room.remote.setClipboard(text)
   }
 
   /////////////////////////////
@@ -274,7 +274,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content,
       type: 'text',
@@ -288,18 +288,18 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newEmote({ type: emote })
+    this.$accessor.room.chat.newEmote({ type: emote })
   }
 
   /////////////////////////////
   // Screen Events
   /////////////////////////////
   protected [EVENT.SCREEN.CONFIGURATIONS]({ configurations }: ScreenConfigurationsPayload) {
-    this.$accessor.video.setConfigurations(configurations)
+    this.$accessor.room.video.setConfigurations(configurations)
   }
 
   protected [EVENT.SCREEN.RESOLUTION]({ id, width, height, rate }: ScreenResolutionPayload) {
-    this.$accessor.video.setResolution({ width, height, rate })
+    this.$accessor.room.video.setResolution({ width, height, rate })
 
     if (!id) {
       return
@@ -310,7 +310,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.resolution', {
         width: width,
@@ -335,7 +335,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.banned', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -355,7 +355,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.kicked', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -370,14 +370,14 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.user.setMuted({ id: target, muted: true })
+    this.$accessor.room.user.setMuted({ id: target, muted: true })
 
     const member = this.member(target)
     if (!member) {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.muted', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -392,14 +392,14 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.user.setMuted({ id: target, muted: false })
+    this.$accessor.room.user.setMuted({ id: target, muted: false })
 
     const member = this.member(target)
     if (!member) {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.unmuted', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -410,8 +410,8 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.ADMIN.LOCK]({ id }: AdminPayload) {
-    this.$accessor.setLocked(true)
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.setLocked(true)
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.room_locked') as string,
       type: 'event',
@@ -420,8 +420,8 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.ADMIN.UNLOCK]({ id }: AdminPayload) {
-    this.$accessor.setLocked(false)
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.setLocked(false)
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.room_unlocked') as string,
       type: 'event',
@@ -430,10 +430,10 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.ADMIN.CONTROL]({ id, target }: AdminTargetPayload) {
-    this.$accessor.remote.setHost(id)
+    this.$accessor.room.remote.setHost(id)
 
     if (!target) {
-      this.$accessor.chat.newMessage({
+      this.$accessor.room.chat.newMessage({
         id,
         content: this.$vue.$t('notifications.controls_taken_force') as string,
         type: 'event',
@@ -447,7 +447,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.controls_taken_steal', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -458,9 +458,9 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
   }
 
   protected [EVENT.ADMIN.RELEASE]({ id, target }: AdminTargetPayload) {
-    this.$accessor.remote.reset()
+    this.$accessor.room.remote.reset()
     if (!target) {
-      this.$accessor.chat.newMessage({
+      this.$accessor.room.chat.newMessage({
         id,
         content: this.$vue.$t('notifications.controls_released_force') as string,
         type: 'event',
@@ -474,7 +474,7 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.controls_released_steal', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -494,9 +494,9 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
       return
     }
 
-    this.$accessor.remote.setHost(member)
+    this.$accessor.room.remote.setHost(member)
 
-    this.$accessor.chat.newMessage({
+    this.$accessor.room.chat.newMessage({
       id,
       content: this.$vue.$t('notifications.controls_given', {
         name: member.id == this.id ? this.$vue.$t('you') : member.displayname,
@@ -508,6 +508,6 @@ export class NekoClient extends BaseClient implements EventEmitter<NekoEvents> {
 
   // Utilities
   protected member(id: string): Member | undefined {
-    return this.$accessor.user.members[id]
+    return this.$accessor.room.user.members[id]
   }
 }

@@ -1,7 +1,7 @@
 import { getterTree, mutationTree, actionTree } from 'typed-vuex'
 import { Member } from '~/neko/types'
 import { EVENT } from '~/neko/events'
-import { accessor } from '~/store'
+import { accessor } from '~/store/index'
 
 export const namespaced = true
 
@@ -51,7 +51,7 @@ export const actions = actionTree(
   { state, getters, mutations },
   {
     sendClipboard({ getters }, clipboard: string) {
-      if (!accessor.connected || !getters.hosting) {
+      if (!accessor.room.connected || !getters.hosting) {
         return
       }
 
@@ -59,7 +59,7 @@ export const actions = actionTree(
     },
 
     toggle({ getters }) {
-      if (!accessor.connected) {
+      if (!accessor.room.connected) {
         return
       }
 
@@ -71,7 +71,7 @@ export const actions = actionTree(
     },
 
     request({ getters }) {
-      if (!accessor.connected || !getters.hosting) {
+      if (!accessor.room.connected || !getters.hosting) {
         return
       }
 
@@ -79,7 +79,7 @@ export const actions = actionTree(
     },
 
     release({ getters }) {
-      if (!accessor.connected || getters.hosting) {
+      if (!accessor.room.connected || getters.hosting) {
         return
       }
 
@@ -87,12 +87,12 @@ export const actions = actionTree(
     },
 
     give({ getters }, member: string | Member) {
-      if (!accessor.connected || !getters.hosting) {
+      if (!accessor.room.connected || !getters.hosting) {
         return
       }
 
       if (typeof member === 'string') {
-        member = accessor.user.members[member]
+        member = accessor.room.user.members[member]
       }
 
       if (!member) {
@@ -103,7 +103,7 @@ export const actions = actionTree(
     },
 
     adminControl() {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 
@@ -111,7 +111,7 @@ export const actions = actionTree(
     },
 
     adminRelease() {
-      if (!accessor.connected || !accessor.user.admin) {
+      if (!accessor.room.connected || !accessor.room.user.admin) {
         return
       }
 
@@ -119,12 +119,12 @@ export const actions = actionTree(
     },
 
     adminGive({ getters }, member: string | Member) {
-      if (!accessor.connected) {
+      if (!accessor.room.connected) {
         return
       }
 
       if (typeof member === 'string') {
-        member = accessor.user.members[member]
+        member = accessor.room.user.members[member]
       }
 
       if (!member) {
