@@ -2,6 +2,8 @@ import './assets/styles/main.scss'
 
 import Vue from 'vue'
 
+
+
 import Notifications from 'vue-notification'
 import ToolTip from 'v-tooltip'
 import Logger from './plugins/log'
@@ -15,6 +17,8 @@ import router from './routes/index';
 import store from './store/index'
 import app from './app.vue'
 import VueRouter from 'vue-router'
+import Buefy from 'buefy'
+import 'buefy/dist/buefy.css'
 
 Vue.config.productionTip = false
 
@@ -26,6 +30,8 @@ Vue.use(Swal)
 Vue.use(Anime)
 Vue.use(Client)
 Vue.use(VueRouter);
+Vue.use(Buefy)
+
 
 new Vue({
   i18n,
@@ -34,15 +40,15 @@ new Vue({
   router: router,
   created() {
     const click = () => {
-      this.$accessor.setActive()
-      if (this.$accessor.settings.autoplay && this.$accessor.video.playing) {
-        this.$accessor.video.setMuted(false)
+      this.$accessor.room.setActive()
+      if (this.$accessor.room.settings.autoplay && this.$accessor.room.video.playing) {
+        this.$accessor.room.video.setMuted(false)
       }
       window.removeEventListener('click', click, false)
     }
     window.addEventListener('click', click, false)
 
     this.$client.init(this)
-    this.$accessor.initialise()
+    this.$accessor.room.initialise()
   },
 }).$mount('#neko')

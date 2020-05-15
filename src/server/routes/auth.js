@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 
 router.post("/register_login", (req, res, next) => {
+    console.log(req.body);
     passport.authenticate("local", function(err, user, info) {
         if (err) {
             return res.status(400).json({ errors: err });
@@ -14,7 +15,12 @@ router.post("/register_login", (req, res, next) => {
             if (err) {
                 return res.status(400).json({ errors: err });
             }
-            return res.status(200).json({ success: `logged in ${user.id}` });
+            return res.status(200).json({
+                id: user.id,
+                email: user.email,
+                username: "Joe Blow",
+                img: "https://thispersondoesnotexist.com/"
+            });
         });
     })(req, res, next);
 });

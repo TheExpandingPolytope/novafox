@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { useAccessor, mutationTree, actionTree } from 'typed-vuex'
 
+import * as ui from './ui';
 import * as room from './room';
 import * as auth from './auth';
 
 export const state = () => ({
+
 })
   
 export const mutations = mutationTree(state, {
@@ -21,7 +23,7 @@ export const storePattern = {
     state,
     mutations,
     actions,
-    modules: { auth, room },
+    modules: { ui, auth, room },
 }
 
 Vue.use(Vuex)

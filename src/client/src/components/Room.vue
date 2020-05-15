@@ -165,15 +165,15 @@
     @Ref('video') video!: Video
 
     get about() {
-      return this.$accessor.client.about
+      return this.$accessor.room.client.about
     }
 
     get side() {
-      return this.$accessor.client.side
+      return this.$accessor.room.client.side
     }
 
     get connected() {
-      return this.$accessor.connected
+      return this.$accessor.room.connected
     }
   }
 </script>

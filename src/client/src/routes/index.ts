@@ -3,8 +3,6 @@ import VueRouter from 'vue-router';
 
 import Main from '../components/Main.vue';
 import Room from '../components/Room.vue';
-import Login from '../components/Login.vue';
-import Signup from '../components/Signup.vue';
 
 Vue.use(VueRouter);
 
