@@ -63,10 +63,10 @@ export const actions = actionTree(
         .get<Emojis>('/emoji.json')
         .then((req) => {
           for (const group of req.data.groups) {
-            accessor.emoji.addGroup(group)
+            accessor.room.emoji.addGroup(group)
           }
           accessor.room.emoji.setList(req.data.list)
-          accessor.room.emoji.setKeywords(req.data.keywords)
+          accessor.room.emoji.setKeywords(req.data.keywords) 
         })
         .catch(console.error)
     },

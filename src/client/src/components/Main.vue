@@ -2,7 +2,6 @@
   <div ref="component" class="main">
       <nav-bar></nav-bar>
       <login></login>
-      <room-list></room-list>
   </div>
 </template>
 
@@ -15,14 +14,14 @@
     
     import MainNavbar from './MainNavbar.vue';
     import MainLogin from './MainLogin.vue';
-    import MainRoomList from './MainRoomList.vue';
+    //import MainRoomList from './MainRoomList.vue';
 
     @Component({
         name: 'app',
         components:{
             'nav-bar': MainNavbar,
             'login': MainLogin,
-            'room-list': MainRoomList,
+            //'room-list': MainRoomList,
         }
     })
     export default class extends Vue {

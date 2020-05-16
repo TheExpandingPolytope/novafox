@@ -43,10 +43,10 @@ export const actions = actionTree(
         },
         logout(){
             $http
-                .get<User>('http://localhost:5000/api/auth/logout')
+                .post<User>('http://localhost:5000/api/auth/logout')
                 .then((req) => {
-                    accessor.auth.setAuth(true);
-                    accessor.auth.setUser(req.data);
+                    accessor.auth.setAuth(false);
+                    accessor.auth.setUser({username:'', id:'', img:'', email:''});
                 })
                 .catch(console.error)
         }
